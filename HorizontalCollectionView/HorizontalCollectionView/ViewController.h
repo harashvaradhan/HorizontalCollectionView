@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@interface ViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UITableViewDataSource,UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collvAnimal;
+@property (weak, nonatomic) IBOutlet UITableView *tblAnimals;
 
 @end
 

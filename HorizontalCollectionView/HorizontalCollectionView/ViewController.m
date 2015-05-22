@@ -17,6 +17,8 @@
     NSMutableArray *animals2;
     NSMutableArray *animals3;
     NSMutableSet *selectedAnimals;
+    NSDictionary *animalsNamePair;
+    NSArray *selectedAnimalsArray;
 }
 
 @end
@@ -25,8 +27,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    selectedAnimals = [[NSMutableSet alloc]init];
+    selectedAnimalsArray = [[NSArray alloc]init];
 //    animals = [[NSMutableArray alloc]initWithObjects:@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17", nil];
+    animalsNamePair = [NSDictionary dictionaryWithObjectsAndKeys:
+                             @"Frog",@"1",
+                             @"Horse",@"2",
+                             @"Dog",@"3",
+                             @"Panda",@"4",
+                             @"Hippopotamus",@"5",
+                             @"Adult Penguin",@"6",
+                             @"Elephant",@"7",
+                             @"Squirrel",@"8",
+                             @"Baby Penguin",@"9",
+                             @"Animal Husbandry",@"10",
+                             @"Bird",@"11",
+                             @"Camel",@"12",
+                             @"Fish",@"13",
+                             @"Butterfly",@"14",
+                             @"Cat",@"15",
+                             @"Flying Bird",@"16",
+                             @"White Tiger",@"17", nil];
     
     animals1 = [[NSMutableArray alloc]initWithObjects:@"1",@"2",@"3",@"4",@"5",@"6", nil];
     animals2 = [[NSMutableArray alloc]initWithObjects:@"7",@"8",@"9",@"10",@"11",@"12", nil];
@@ -51,6 +72,17 @@
     
     UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
     NSLog(@"TAG : %ld",(long)cell.tag);
+    NSString *selectedAnimalTag = [NSString stringWithFormat:@"%ld",cell.tag];
+    if (![selectedAnimals containsObject:selectedAnimalTag]) {
+        [selectedAnimals addObject:selectedAnimalTag];
+        selectedAnimalsArray = [selectedAnimals allObjects];
+        ((UIImageView *)([cell viewWithTag:102])).image = [UIImage imageNamed:@"check"];
+    }else{
+        [selectedAnimals removeObject:selectedAnimalTag];
+        selectedAnimalsArray = [selectedAnimals allObjects];
+        ((UIImageView *)([cell viewWithTag:102])).image = [UIImage imageNamed:@"add"];
+    }
+    [self.tblAnimals reloadData];
 }
 #pragma mark - CollectionView DataSource Methods
 
@@ -64,6 +96,13 @@
     NSLog(@"[animals[indexPath.section] objectAtIndex:indexPath.row] : %@",[[animals objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]);
     
     cell.tag = [[[animals objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]intValue];
+    
+    NSString *selectedAnimalTag = [NSString stringWithFormat:@"%ld",cell.tag];
+    if ([selectedAnimals containsObject:selectedAnimalTag]) {
+        ((UIImageView *)([cell viewWithTag:102])).image = [UIImage imageNamed:@"check"];
+    }else{
+        ((UIImageView *)([cell viewWithTag:102])).image = [UIImage imageNamed:@"add"];
+    }
     return cell;
 }
 
@@ -85,6 +124,31 @@
     return UIEdgeInsetsMake(10, 25, 10, 25);
 }
 
+#pragma mark - TableView Delegate Methods
+
+
+#pragma mark - TableView DataSource Methods
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return 1;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return selectedAnimalsArray.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell;
+    
+    if (cell == nil) {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"animal"];
+        NSLog(@"[selectedAnimalsArray objectAtIndex:indexPath.row] : %@",[selectedAnimalsArray objectAtIndex:indexPath.row]);
+        ((UILabel *)[cell viewWithTag:201]).text = [animalsNamePair objectForKey:[NSString stringWithFormat:@"%@",[selectedAnimalsArray objectAtIndex:indexPath.row]]];
+        ((UIImageView *)([cell viewWithTag:101])).image = [UIImage imageNamed:[selectedAnimalsArray objectAtIndex:indexPath.row]];
+
+    }
+    return cell;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
